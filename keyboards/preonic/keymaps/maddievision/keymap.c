@@ -1,6 +1,8 @@
 #include QMK_KEYBOARD_H
 #include "midi.h"
 #include "qmk_midi.h"
+#include <string.h>
+#include <printf.h>
 
 /* THIS FILE WAS GENERATED!
  *
@@ -16,7 +18,13 @@ enum preonic_layers {
 
   _LOWER,
   _RAISE,
-  _ADJUST
+  _ADJUST,
+
+  _CONSOLE
+};
+
+enum preonic_keycodes {
+  CONSOLE = SAFE_RANGE,
 };
 
 // transparent and nop
@@ -82,7 +90,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	[_RAISE] = LAYOUT_ortho_5x12(
         KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_MINS, KC_EQL,  KC_BSPC,
-        KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_LBRC, KC_RBRC, KC_DEL,
+        KC_GRV,  CONSOLE, KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_LBRC, KC_RBRC, KC_DEL,
         KC_DEL,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_MINS, KC_EQL,  KC_SCLN, KC_QUOT, KTR,    
         KTR,     KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_NUHS, KC_NUBS, KC_VOLD, KC_VOLU, KTR,    
         KTR,     KTR,     KTR,     KTR,     MO_ADJ,  KTR,     KTR,     KTR,     KC_MNXT, KC_PGUP, KC_PGDN, KC_MPLY
@@ -94,5 +102,141 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KTR,     KTR,     MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, KNO,     KNO,     KNO,     KTR,     KTR,    
         KTR,     MUV_DE,  MUV_IN,  MU_ON,   MU_OFF,  MI_ON,   MI_OFF,  KTR,     KTR,     KTR,     KTR,     KTR,    
         KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR
-    )
+    ),
+
+	[_CONSOLE] = LAYOUT_ortho_5x12(
+        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,    
+        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,    
+        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,    
+        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,    
+        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR
+    ),
 };
+
+// console stuff
+
+bool console_enabled = false;
+
+#define CONSOLE_MAX 256
+
+char console_buffer[256];
+char console_last[256] = "";
+size_t console_last_index = 0;
+size_t console_index = 0;
+enum console_states {
+  CINPUT,
+};
+
+void console_prompt(void) {
+  send_string("> ");
+}
+void enter_console(void) {
+  console_enabled = true;
+  console_index = 0;
+  console_last_index = 0;
+  layer_move(_CONSOLE);
+  send_string("--------\n\nconsole VISION v0.01\n\nwelcome!\n\n");
+  console_prompt();
+}
+
+void console_command(char buf[]) {
+  send_string("\n");
+  if (strcmp(buf, "exit") == 0) {
+    send_string("goodbye!\n\n--------\n\n");
+    console_enabled = false;
+    layer_move(_BASE_QWERTY);
+    return;
+  } else if (strcmp(buf, "help") == 0) {
+    send_string("i can't help you now... sorry!\n\n");
+  } else if (strcmp(buf, "send_midi 60") == 0) {
+    midi_send_noteon(&midi_device, 0, 60, 127); 
+  } else {
+    char msg[128];
+    sprintf(msg, "unknown command: %s\n\n", buf);
+    send_string(msg);
+  }
+  console_prompt();
+}
+
+void console_bspace(int count) {
+  for (int i = 0; i < count; ++i) {
+    SEND_STRING(SS_TAP(X_BSPACE));
+  }
+}
+
+bool process_mv_console(uint16_t keycode, keyrecord_t *record) {
+  char inp = 0;
+  if (record->event.pressed) {
+    if (keycode >= KC_A && keycode <= KC_Z) {
+      inp = keycode - KC_A + 'a';
+    } else if (keycode >= KC_1 && keycode <= KC_9) {
+      inp = keycode - KC_1 + '1';
+    } else {
+      switch (keycode) {
+        case KC_0:
+        inp = '0';
+        break;
+        case KC_ENTER:
+        console_buffer[console_index] = 0;
+        strcpy(console_last, console_buffer);
+        console_last_index = console_index;
+        console_index = 0;
+        console_command(console_buffer);
+        return false;
+        break;
+        case KC_BSPACE:
+        if (console_index <= 0) {
+          console_index = 0;
+          return false;
+        }
+        console_index--;
+        break;
+        case KC_SPACE:
+        inp = ' ';
+        break;
+        case KC_UNDERSCORE:
+        inp = '_';
+        break;
+        case KC_UP:
+        strcpy(console_buffer, console_last);
+        console_bspace(console_index);
+        send_string(console_buffer);
+        console_index = console_last_index;
+        return false;
+        break;
+        // disabled keys
+        case KC_ESCAPE:
+        case KC_TAB:
+        case KC_LEFT:
+        case KC_DOWN:
+        case KC_RIGHT:
+        return false;
+        break;
+      }
+    }
+    if (inp) { // leave space for string termination
+      if (console_index >= CONSOLE_MAX - 2) {
+        return false; //prevent key send
+      } else {
+        console_buffer[console_index++] = inp;
+      }
+    }
+  }
+  return true;
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (console_enabled) {
+    return process_mv_console(keycode, record);
+  }
+
+  switch (keycode) {
+    case CONSOLE:
+    if (record->event.pressed) {
+      enter_console();
+      return false;
+    }
+    break;
+  }
+  return true;
+}
