@@ -105,8 +105,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
 	[_CONSOLE] = LAYOUT_ortho_5x12(
-        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,    
-        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,    
+        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KC_BSPC,    
+        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KC_BSLS,    
         KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,    
         KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,    
         KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR
@@ -148,7 +148,7 @@ void console_command(char buf[]) {
     return;
   } else if (strcmp(buf, "help") == 0) {
     send_string("i can't help you now... sorry!\n\n");
-  } else if (strcmp(buf, "send_midi 60") == 0) {
+  } else if (strcmp(buf, "sendmidi 60") == 0) {
     midi_send_noteon(&midi_device, 0, 60, 127); 
   } else {
     char msg[128];
