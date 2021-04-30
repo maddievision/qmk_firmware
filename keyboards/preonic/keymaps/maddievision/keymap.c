@@ -1,4 +1,6 @@
 #include QMK_KEYBOARD_H
+#include "midi.h"
+#include "qmk_midi.h"
 
 /* THIS FILE WAS GENERATED!
  *
@@ -10,7 +12,7 @@ enum preonic_layers {
   _BASE_QWERTY,
   _NUM_ROW_EXT,
   _MEDIA_BRACKETS,
-  _EXTRA,
+  _MIDI,
 
   _LOWER,
   _RAISE,
@@ -25,11 +27,16 @@ enum preonic_layers {
 #define MO_LWR MO(_LOWER)
 #define MO_RSE MO(_RAISE)
 #define MO_ADJ MO(_ADJUST)
-#define MO_EXT MO(_EXTRA)
+// #define MO_MIDI MO(_MIDI)
 
 // momentary when held
 #define LT_NEXT LT(_NUM_ROW_EXT,KC_BSPC)
 #define LT_MDIA LT(_MEDIA_BRACKETS,KC_BSLS)
+
+// toggle
+
+#define TO_MIDI TO(_MIDI)
+#define TO_BASE TO(_BASE_QWERTY)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -38,7 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    LT_MDIA,
         KC_GRV,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
         KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT,
-        KC_LCTL, MO_EXT,  KC_LALT, KC_LGUI, MO_LWR,  KC_SPC,  KC_SPC,  MO_RSE,  KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
+        KC_LCTL, TO_MIDI, KC_LALT, KC_LGUI, MO_LWR,  KC_SPC,  KC_SPC,  MO_RSE,  KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
     ),
 
 	[_MEDIA_BRACKETS] = LAYOUT_ortho_5x12(
@@ -57,20 +64,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR
     ),
 
-	[_EXTRA] = LAYOUT_ortho_5x12(
-        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KC_MINS, KC_EQL,  KTR,    
-        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KC_LBRC, KC_RBRC, KTR,    
-        KTR,     KC_BTN1, KC_BTN2, KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KC_SCLN, KC_QUOT, KTR,    
-        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     RGB_TOG,
-        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     RGB_RMOD,RGB_VAI, RGB_VAD, RGB_MOD
+	[_MIDI] = LAYOUT_ortho_5x12(
+        MI_TRNSU,KC_NO,   MI_Cs_2, MI_Ds_2, KC_NO,   MI_Fs_2, MI_Gs_2, MI_As_2, KC_NO,   MI_Cs_3, MI_Ds_3, MI_OCTU,     
+        MI_TRNSD,MI_C_2,  MI_D_2,  MI_E_2,  MI_F_2,  MI_G_2,  MI_A_2,  MI_B_2,  MI_C_3,  MI_D_3,  MI_E_3,  MI_OCTD,
+        MI_VELU, KC_NO,   MI_Cs_1, MI_Ds_1, KC_NO,   MI_Fs_1, MI_Gs_1, MI_As_1, KC_NO,   MI_Cs_1, MI_Ds_1, MI_SUS,     
+        MI_VELD, MI_C_1,  MI_D_1,  MI_E_1,  MI_F_1,  MI_G_1,  MI_A_1,  MI_B_1,  MI_C_2,  MI_D_2,  MI_E_2,  MI_MOD,
+        TO_BASE, KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KC_MUTE, KC_VOLD, KC_VOLU, KTR  
     ),
 
 	[_LOWER] = LAYOUT_ortho_5x12(
-        KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_F1,   KC_F2,   KC_F3,   KC_AMPR, KC_ASTR, KC_UNDS, KC_PLUS, KC_DEL,
-        KC_BSPC, KC_EXLM, KC_UP,   KC_ENT,  KC_F4,   KC_F5,   KC_F6,   KC_AMPR, KC_ASTR, KC_LBRC, KC_RBRC, KC_BSPC,
-        KC_DEL,  KC_LEFT, KC_DOWN, KC_RGHT, KC_F7,   KC_F8,   KC_F9,   KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE,
-        KTR,     KC_BTN1, KC_BTN2, KC_BTN3, KC_F10,  KC_F11,  KC_F12,  KNO,     KNO,     KC_VOLD, KC_VOLU, KTR,    
-        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     MO_ADJ,  KC_MNXT, KC_HOME, KC_END,  KC_MPLY
+        KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_F1,   KC_F2,   KC_F3,   KC_AMPR, KNO,     KC_PSLS, KC_PAST, KTR,   
+        KC_BSPC, KC_EXLM, KC_UP,   KC_ENT,  KC_F4,   KC_F5,   KC_F6,   KC_AMPR, KC_P7,   KC_P8,   KC_P9,   KC_PMNS,    
+        KC_DEL,  KC_LEFT, KC_DOWN, KC_RGHT, KC_F7,   KC_F8,   KC_F9,   KC_UNDS, KC_P4,   KC_P5,   KC_P6,   KC_PPLS,    
+        KTR,     KC_BTN1, KC_BTN2, KC_BTN3, KC_F10,  KC_F11,  KC_F12,  KNO,     KC_P1,   KC_P2,   KC_P3,   KTR,
+        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     MO_ADJ,  KC_P0,   KC_PDOT, KC_PDOT, KC_ENT
     ),
 
 	[_RAISE] = LAYOUT_ortho_5x12(
