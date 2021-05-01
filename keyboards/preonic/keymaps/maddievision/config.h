@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef AUDIO_ENABLE
-    #define MADDIEVISION_SOUND E__NOTE(_GS4), E__NOTE(_B4), E__NOTE(_E5), E__NOTE(_FS5), E__NOTE(_GS5),
+    #define MADDIEVISION_SOUND E__NOTE(_E4), E__NOTE(_GS4), E__NOTE(_B4), E__NOTE(_DS5), E__NOTE(_E5),
     #define STARTUP_SONG SONG(MADDIEVISION_SOUND)
     // #define STARTUP_SONG SONG(NO_SOUND)
 
