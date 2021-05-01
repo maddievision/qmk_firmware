@@ -14,13 +14,14 @@ enum preonic_layers {
   _BASE_QWERTY,
   _NUM_ROW_EXT,
   _MEDIA_BRACKETS,
-  _MIDI,
+  _EXTRA,
 
   _LOWER,
   _RAISE,
   _ADJUST,
 
-  _CONSOLE
+  _CONSOLE,
+  _MIDI
 };
 
 enum preonic_keycodes {
@@ -35,6 +36,7 @@ enum preonic_keycodes {
 #define MO_LWR MO(_LOWER)
 #define MO_RSE MO(_RAISE)
 #define MO_ADJ MO(_ADJUST)
+#define MO_EXTR MO(_EXTRA)
 // #define MO_MIDI MO(_MIDI)
 
 // momentary when held
@@ -53,15 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    LT_MDIA,
         KC_GRV,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
         KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT,
-        KC_LCTL, TO_MIDI, KC_LALT, KC_LGUI, MO_LWR,  KC_SPC,  KC_SPC,  MO_RSE,  KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
-    ),
-
-	[_MEDIA_BRACKETS] = LAYOUT_ortho_5x12(
-        KTR,     KNO,     KNO,     KNO,     KNO,     KC_MRWD, KC_MPLY, KC_MFFD, KC_MUTE, KC_VOLD, KC_VOLU, KC_DEL,
-        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KC_LBRC, KC_RBRC, KTR,    
-        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KC_SCLN, KC_QUOT, KTR,    
-        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KTR,    
-        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR
+        KC_LCTL, MO_EXTR, KC_LALT, KC_LGUI, MO_LWR,  KC_SPC,  KC_SPC,  MO_RSE,  KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
     ),
 
 	[_NUM_ROW_EXT] = LAYOUT_ortho_5x12(
@@ -72,12 +66,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR
     ),
 
-	[_MIDI] = LAYOUT_ortho_5x12(
-        MI_TRNSU,KC_NO,   MI_Cs_2, MI_Ds_2, KC_NO,   MI_Fs_2, MI_Gs_2, MI_As_2, KC_NO,   MI_Cs_3, MI_Ds_3, MI_OCTU,     
-        MI_TRNSD,MI_C_2,  MI_D_2,  MI_E_2,  MI_F_2,  MI_G_2,  MI_A_2,  MI_B_2,  MI_C_3,  MI_D_3,  MI_E_3,  MI_OCTD,
-        MI_VELU, KC_NO,   MI_Cs_1, MI_Ds_1, KC_NO,   MI_Fs_1, MI_Gs_1, MI_As_1, KC_NO,   MI_Cs_1, MI_Ds_1, MI_SUS,     
-        MI_VELD, MI_C_1,  MI_D_1,  MI_E_1,  MI_F_1,  MI_G_1,  MI_A_1,  MI_B_1,  MI_C_2,  MI_D_2,  MI_E_2,  MI_MOD,
-        TO_BASE, KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KC_MUTE, KC_VOLD, KC_VOLU, KTR  
+	[_MEDIA_BRACKETS] = LAYOUT_ortho_5x12(
+        KTR,     KNO,     KNO,     KNO,     KNO,     KC_MRWD, KC_MPLY, KC_MFFD, KC_MUTE, KC_VOLD, KC_VOLU, KC_DEL,
+        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KC_LBRC, KC_RBRC, KTR,    
+        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KC_SCLN, KC_QUOT, KTR,    
+        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KTR,    
+        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR
+    ),
+
+	[_EXTRA] = LAYOUT_ortho_5x12(
+        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KTR,    
+        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KTR,    
+        KTR,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KTR,    
+        KTR,     KNO,     KNO,     CONSOLE, TO_MIDI, KNO,     KNO,     KNO,     KNO,     KNO,     KNO,     KTR,    
+        KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR
     ),
 
 	[_LOWER] = LAYOUT_ortho_5x12(
@@ -111,6 +113,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,    
         KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR
     ),
+
+	[_MIDI] = LAYOUT_ortho_5x12(
+        MI_As_2, KC_NO,   MI_Cs_3, MI_Ds_3, KC_NO,   MI_Fs_3, MI_Gs_3, MI_As_3, KC_NO,   MI_Cs_4, MI_Ds_4, MI_OCTU,     
+        MI_B_2,  MI_C_3,  MI_D_3,  MI_E_3,  MI_F_3,  MI_G_3,  MI_A_3,  MI_B_3,  MI_C_4,  MI_D_4,  MI_E_4,  MI_OCTD,
+        MI_Fs_1, MI_Gs_1, MI_As_1, KC_NO,   MI_Cs_2, MI_Ds_2, KC_NO,   MI_Fs_2, MI_Gs_2, MI_As_2, KC_NO,   MI_SUS,     
+        MI_G_1,  MI_A_1,  MI_B_1,  MI_C_2,  MI_D_2,  MI_E_2,  MI_F_2,  MI_G_2,  MI_A_2,  MI_B_2,  MI_C_3,  MI_MOD,
+        TO_BASE, KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KTR,     KC_MUTE, KC_VOLD, KC_VOLU, KTR  
+    )
+
 };
 
 // console stuff
